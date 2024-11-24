@@ -1,0 +1,23 @@
+.allmessagesContainer {
+  padding: 130px 50px;
+  font-family: Tajawal;
+}
+.table {
+}
+.table td {
+  color: #3c3c3c;
+  padding-bottom: 10px;
+}
+.tableContainer{
+    display: flex;
+    justify-content: center;
+    width: 1000px;
+}
+.option{
+    position: absolute;
+    width: 200px;
+    z-index: 1;
+    background-color: #fff;
+    border-radius: 10px;
+    border: 1px solid lightgray;
+}
