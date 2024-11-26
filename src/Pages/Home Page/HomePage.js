@@ -6,15 +6,14 @@ import { Outlet } from "react-router-dom";
 function HomePage() {
   return (
     <div>
-      <Navbar date={true} />
+      <div>
+        <Navbar date={true} />
+      </div>
       <div className="d-flex">
         <SidebarBox />
-        <div className="content">
-          <Outlet /> {/* Render the child routes here */}
-        </div>
+        <Outlet />
       </div>
     </div>
   );
 }
-
 export default HomePage;

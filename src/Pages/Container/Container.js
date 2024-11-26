@@ -1,9 +1,39 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Container.css";
+
 function Container() {
+  const [status, setStatus] = useState({});
+
+  useEffect(() => {
+    async function fetchDashboardStatus() {
+      try {
+        const response = await fetch(
+          "http://104.248.251.235:8080/dashboard-stats/",
+          {
+            method: "GET",
+            headers: {
+              accept: "*/*",
+              Authorization: localStorage.getItem("access token"),
+            },
+          }
+        );
+        const result = await response.json();
+        console.log(result);
+        if (response.ok) {
+          console.log("success fetch status");
+          setStatus(result.data);
+        } else {
+          console.log("failed fetch status");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchDashboardStatus();
+  }, []);
+
   return (
     <div className="container">
-      {/* 1 */}
       <div className="d-flex align-items-center justify-content-around item">
         <div>
           <img
@@ -12,12 +42,11 @@ function Container() {
             width={"35px"}
           />
         </div>
-        <div className=" mt-3">
-          <h4 className="mb-0 fw-bolder">200</h4>
+        <div className="mt-3">
+          <h4 className="mb-0 fw-bolder">{status.total_products}</h4>
           <p>جميع المنتجات</p>
         </div>
       </div>
-      {/* 2 */}
       <div className="d-flex align-items-center justify-content-around item">
         <div>
           <img
@@ -26,16 +55,14 @@ function Container() {
             width={"35px"}
           />
         </div>
-        <div className=" mt-3">
-          <h4 className="mb-0 fw-bolder">150</h4>
+        <div className="mt-3">
+          <h4 className="mb-0 fw-bolder">{status.active_products}</h4>
           <p>
-            {" "}
             جميع المنتجات
             <br /> المعروضة
           </p>
         </div>
       </div>
-      {/* 3 */}
       <div className="d-flex align-items-center justify-content-around item">
         <div>
           <img
@@ -44,16 +71,14 @@ function Container() {
             width={"35px"}
           />
         </div>
-        <div className=" mt-3">
-          <h4 className="mb-0 fw-bolder">50</h4>
+        <div className="mt-3">
+          <h4 className="mb-0 fw-bolder">{status.inactive_products}</h4>
           <p>
-            {" "}
             جميع المنتجات <br />
             المخفية
           </p>
         </div>
       </div>
-      {/* 4 */}
       <div className="d-flex align-items-center justify-content-around item">
         <div>
           <img
@@ -62,15 +87,14 @@ function Container() {
             width={"35px"}
           />
         </div>
-        <div className=" mt-3">
-          <h4 className="mb-0 fw-bolder">2</h4>
+        <div className="mt-3">
+          <h4 className="mb-0 fw-bolder">{status.total_categories}</h4>
           <p>
             جميع الانواع <br />
             الحالية
           </p>
         </div>
       </div>
-      {/* 5 */}
       <div className="d-flex align-items-center justify-content-around item">
         <div>
           <img
@@ -79,12 +103,13 @@ function Container() {
             width={"35px"}
           />
         </div>
-        <div className=" mt-3">
-          <h4 className="mb-0 fw-bolder">130</h4>
+        <div className="mt-3">
+          <h4 className="mb-0 fw-bolder">
+            {status.category_stats && status.category_stats[0]?.product_count}
+          </h4>
           <p>نيو كلاسيك</p>
         </div>
       </div>
-      {/* 6 */}
       <div className="d-flex align-items-center justify-content-around item">
         <div>
           <img
@@ -93,12 +118,13 @@ function Container() {
             width={"35px"}
           />
         </div>
-        <div className=" mt-3">
-          <h4 className="mb-0 fw-bolder">70</h4>
+        <div className="mt-3">
+          <h4 className="mb-0 fw-bolder">
+            {status.category_stats && status.category_stats[3]?.product_count}
+          </h4>
           <p>كلاسيكي</p>
         </div>
       </div>
-      {/* 7 */}
       <div className="d-flex align-items-center justify-content-around item">
         <div>
           <img
@@ -107,12 +133,11 @@ function Container() {
             width={"35px"}
           />
         </div>
-        <div className=" mt-3">
-          <h4 className="mb-0 fw-bolder">50</h4>
+        <div className="mt-3">
+          <h4 className="mb-0 fw-bolder">{status.total_support_messages}</h4>
           <p>جميع الرسائل</p>
         </div>
       </div>
-      {/* 8 */}
       <div className="d-flex align-items-center justify-content-around item">
         <div>
           <img
@@ -121,12 +146,13 @@ function Container() {
             width={"35px"}
           />
         </div>
-        <div className=" mt-3">
-          <h4 className="mb-0 fw-bolder">7</h4>
+        <div className="mt-3">
+          <h4 className="mb-0 fw-bolder">{status.new_support_messages}</h4>
           <p>رسائل جديدة</p>
         </div>
       </div>
     </div>
   );
 }
+
 export default Container;

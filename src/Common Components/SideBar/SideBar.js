@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./SideBar.css";
 import { useNavigate } from "react-router-dom";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa"; //up and down arrow
 
 function SidebarBox() {
   const [openItemId, setOpenItemId] = useState(null);
@@ -90,7 +91,7 @@ function SidebarBox() {
       itemId: "types",
       subItems: [
         { title: "جميع الأنواع", navigateTo: "/HomePage/AllTypes" },
-        { title: "اضافة نوع جديد", navigateTo: "/" },
+        { title: "اضافة نوع جديد", navigateTo: "/HomePage/AddNewType" },
       ],
     },
     {
@@ -121,8 +122,10 @@ function SidebarBox() {
       title: "المنتجات",
       itemId: "productd",
       subItems: [
-        { title: "كلاسيك", navigateTo: "/" },
-        { title: "نيو كلاسيك", navigateTo: "/" },
+        { title: "جميع المنتجات", navigateTo: "/HomePage/AllCats" },
+        { title: "اضافة منتج جديد", navigateTo: "/HomePage/AddNewCat" },
+        { title: "كلاسيك", navigateTo: "/HomePage/ClassicProducts" },
+        { title: "نيو كلاسيك", navigateTo: "/HomePage/ModrenProducts" },
       ],
     },
     {
@@ -181,9 +184,9 @@ function SidebarBox() {
 
   return (
     <div className="sidebar">
-      <div className="text-center pt-5">
-        <img src="/assets/images/Group (2).png" alt="logo"/>
-      </div>
+      {/* <div className="text-center pt-5">
+        <img src="/assets/images/Group (2).png" alt="logo" className="mt-5" />
+      </div> */}
       <div className="sidebarContainer">
         <ul className="menu">
           {menuItems.map((item) => (
@@ -205,6 +208,13 @@ function SidebarBox() {
                   <span className="menu-item-icon">{item.icon}</span>
                   {item.title}
                 </span>
+                {item.subItems ? (
+                  openItemId === item.itemId ? (
+                    <FaChevronUp className="up-icon" />
+                  ) : (
+                    <FaChevronDown className="down-icon" />
+                  )
+                ) : null}
               </div>
               {item.subItems && openItemId === item.itemId && (
                 <ul className="submenu">

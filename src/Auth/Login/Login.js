@@ -44,6 +44,8 @@ function Login() {
         setLoading(false);
         console.log("Login success:", result);
         localStorage.setItem("access token", result.data.access);
+        localStorage.setItem("username", result.data.username);
+        console.log(result.data.username)
         setShowModal(true);
         setModalError(false);
         setTimeout(() => {
@@ -145,9 +147,9 @@ function Login() {
                   <p
                     className="mt-3"
                     style={{ cursor: "pointer" }}
-                    onClick={() => navigate("/ForgotPassword")}
+                    onClick={() => navigate("/NewPassword")}
                   >
-                    هل نسيت كلمة السر؟
+                    هل تريد تغير كلمة السر؟
                   </p>
                 </div>
                 <div className="mt-3">

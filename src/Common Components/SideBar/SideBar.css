@@ -1,13 +1,12 @@
 .sidebar {
   border-left: 1px solid lightgray;
-  /* height: 100; */
-  position: relative;
-  z-index: 2;
+  height: 100vh;
 }
 .sidebarContainer {
+  margin-top: 60px;
   font-family: Tajawal;
   width: 300px;
-  padding: 50px 10px;
+  padding: 50px 20px;
   background-color: #fff;
   color: #000;
 }

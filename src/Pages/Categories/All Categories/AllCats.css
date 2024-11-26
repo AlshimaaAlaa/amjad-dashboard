@@ -1,18 +1,19 @@
-.alltypesContainer {
-  padding: 130px 50px;
+.allproductsContainer {
+  padding: 150px 40px;
   font-family: Tajawal;
 }
-.showOptions{
+.allOptions{
   background-color: #fff;
+  position: absolute;
+  z-index: 1;
+  width: 300px;
+  left: 10px;
   border-radius: 10px;
   border: 1px solid lightgray;
-  width: 300px;
-  padding: 10px;
 }
-.showOptions p{
-  text-align: right !important;
+.allOptions p{
   border-bottom: 1px solid lightgray;
 }
-.showOptions p:last-child{
+.allOptions p:last-child{
   border-bottom: none;
 }

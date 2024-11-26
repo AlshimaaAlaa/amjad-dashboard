@@ -1,23 +1,25 @@
 .allmessagesContainer {
-  padding: 130px 50px;
+  margin: 130px 20px 0px 0px;
   font-family: Tajawal;
-}
-.table {
 }
 .table td {
   color: #3c3c3c;
   padding-bottom: 10px;
 }
-.tableContainer{
-    display: flex;
-    justify-content: center;
-    width: 1000px;
+.tableContainer {
+  display: flex;
+  justify-content: center;
+  width: 1100px;
 }
-.option{
-    position: absolute;
-    width: 200px;
-    z-index: 1;
-    background-color: #fff;
-    border-radius: 10px;
-    border: 1px solid lightgray;
+.option {
+  width: 200px;
+  background-color: #fff;
+  border-radius: 10px;
+  border: 1px solid lightgray;
+}
+.no-message {
+  font-size: 25px;
+  text-align: center !important;
+  margin: 150px 400px;
+  font-family: Amiri;
 }
