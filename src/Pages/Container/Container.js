@@ -120,11 +120,12 @@ function Container() {
         </div>
         <div className="mt-3">
           <h4 className="mb-0 fw-bolder">
-            {status.category_stats && status.category_stats[3]?.product_count}
+            {status.category_stats && status.category_stats[1]?.product_count}
           </h4>
           <p>كلاسيكي</p>
         </div>
       </div>
+
       <div className="d-flex align-items-center justify-content-around item">
         <div>
           <img

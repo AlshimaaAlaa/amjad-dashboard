@@ -8,6 +8,7 @@
   border: 1px solid lightgray;
   width: 300px;
   padding: 10px;
+  left: 120px;
 }
 .showOptions p{
   text-align: right !important;

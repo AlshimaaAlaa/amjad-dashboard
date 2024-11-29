@@ -8,6 +8,7 @@ function ClassicProducts() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [options, setOptions] = useState(null);
+  const [sortOrder, setSortOrder] = useState("asc");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,11 +24,12 @@ function ClassicProducts() {
         });
         const result = await response.json();
         if (response.ok) {
-            const classicProducts = result.data.filter(
-                (product) =>
-                  product.category &&
-                  (product.category.name === "classic" || product.category.name === "كلاسيك")
-              );
+          const classicProducts = result.data.filter(
+            (product) =>
+              product.category &&
+              (product.category.name === "classic" ||
+                product.category.name === "كلاسيك")
+          );
           setLoading(false);
           setProducts(classicProducts);
         } else {
@@ -51,27 +53,65 @@ function ClassicProducts() {
     );
   };
 
+  // Handle sorting by price
+  const handleSort = (order) => {
+    setSortOrder(order);
+    const sortedProducts = [...products].sort((a, b) => {
+      if (order === "asc") {
+        return a.price - b.price;
+      } else {
+        return b.price - a.price;
+      }
+    });
+    setProducts(sortedProducts);
+  };
+
   return (
     <div className="allproductsContainer">
-      <div
-        className="d-flex align-items-center"
-        style={{
-          backgroundColor: "#F5F5DC",
-          border: "1px solid lightgray",
-          borderRadius: "30px",
-          padding: "0px 20px 0px 20px",
-          width: "200px",
-        }}
-      >
-        <img src="/assets/images/sofa-livingroom-svgrepo-com.png" alt="product classic"/>
-        <p className="mt-3 me-2 ms-2 fw-bolder">كلاسيكي</p>
+      <div className="d-flex align-items-center justify-content-between">
+        <div
+          className="d-flex align-items-center"
+          style={{
+            backgroundColor: "#F5F5DC",
+            border: "1px solid lightgray",
+            borderRadius: "30px",
+            padding: "0px 20px 0px 20px",
+            width: "200px",
+            height:"45px",
+          }}
+        >
+          <img
+            src="/assets/images/sofa-livingroom-svgrepo-com.png"
+            alt="product classic"
+            width={'20px'}
+            className="ms-2"
+          />
+          <p className="mt-3 me-2 ms-2 fw-bolder">كلاسيكي</p>
+        </div>
+
+        <div className="sort-options mb-3">
+          <label htmlFor="sortOrder" className="fw-bold me-2 ms-2">
+            ترتيب حسب السعر :
+          </label>
+          <select
+            id="sortOrder"
+            value={sortOrder}
+            onChange={(e) => handleSort(e.target.value)}
+            className="form-select"
+            style={{ width: "200px", display: "inline-block" }}
+          >
+            <option value="asc">من الأقل إلى الأعلى</option>
+            <option value="desc">من الأعلى إلى الأقل</option>
+          </select>
+        </div>
       </div>
+
       {error ? (
         <p
           className="text-danger"
           style={{
             textAlign: "center",
-            fontSize: "35px",
+            fontSize: "30px",
             margin: "100px 350px ",
             fontFamily: "Amiri",
           }}
@@ -82,7 +122,7 @@ function ClassicProducts() {
         <p
           style={{
             textAlign: "center",
-            fontSize: "35px",
+            fontSize: "30px",
             margin: "100px 350px ",
             fontFamily: "Amiri",
           }}
@@ -110,7 +150,7 @@ function ClassicProducts() {
             <tbody>
               {products.map((product, index) => (
                 <tr key={index}>
-                  <td>{product.id}</td>
+                  <td>{index + 1}</td>
                   <td>{product.name}</td>
                   <td>
                     {product.category ? product.category.name : "No Category"}
@@ -158,5 +198,4 @@ function ClassicProducts() {
     </div>
   );
 }
-
 export default ClassicProducts;

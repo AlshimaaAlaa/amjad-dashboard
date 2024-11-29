@@ -184,7 +184,7 @@ function Login() {
               </button>
             </div>
             <div className="success-img">
-              <img src="/assets/images/done.png" alt="done" />
+              <img src="/assets/images/success-achievement-award-medal-winner-svgrepo-com 1.png" alt="done" />
             </div>
             <h4 className="p-4 text-center fw-bolder">
               لقد تم تسجيل دخولكم بنجاح

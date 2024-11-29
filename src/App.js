@@ -15,6 +15,8 @@ import AddNewCat from "./Pages/Categories/Add New Cats/AddNewCat";
 import MessageDetail from "./Pages/Messages/Message Detail/MessageDetail";
 import ClassicProducts from "./Pages/Categories/Classic Cats/ClassicProducts";
 import ModrenProducts from "./Pages/Categories/Modren Cats/ModrenProducts";
+import RelatedProducts from "./Pages/Types/Related Products/RelatedProducts";
+import EditType from "./Pages/Types/Edit Type/EditType";
 function App() {
   return (
     <BrowserRouter>
@@ -23,7 +25,7 @@ function App() {
         <Route path="/ForgotPassword" element={<ForgotPassword />} />
         <Route path="/ConfirmCode" element={<ConfirmCode />} />
         <Route path="/NewPassword" element={<NewPassword />} />
-        
+
         <Route path="/HomePage" element={<HomePage />}>
           <Route index element={<Container />} />
           <Route path="/HomePage/AllTypes" element={<AllTypes />} />
@@ -33,9 +35,17 @@ function App() {
           <Route path="/HomePage/AllCats" element={<AllCats />} />
           <Route path="/HomePage/Edit" element={<Edit />} />
           <Route path="/HomePage/AddNewCat" element={<AddNewCat />} />
-          <Route path="/HomePage/AllMessages/:id/" element={<MessageDetail />} />
-          <Route path="/HomePage/ClassicProducts" element={<ClassicProducts />} />
+          <Route
+            path="/HomePage/AllMessages/:id/"
+            element={<MessageDetail />}
+          />
+          <Route
+            path="/HomePage/ClassicProducts"
+            element={<ClassicProducts />}
+          />
           <Route path="/HomePage/ModrenProducts" element={<ModrenProducts />} />
+          <Route path="/HomePage/AllTypes/:id/" element={<RelatedProducts />} />
+          <Route path="/HomePage/EditType" element={<EditType />} />
         </Route>
       </Routes>
     </BrowserRouter>

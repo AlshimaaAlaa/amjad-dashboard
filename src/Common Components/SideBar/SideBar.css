@@ -1,6 +1,5 @@
 .sidebar {
   border-left: 1px solid lightgray;
-  height: 100vh;
 }
 .sidebarContainer {
   margin-top: 60px;
@@ -15,6 +14,7 @@
   padding: 0;
   margin: 0;
   color: #909090;
+  font-weight: bolder;
 }
 .menu-item {
   margin-bottom: 10px;
@@ -25,6 +25,7 @@
   display: flex;
   justify-content: space-between;
   border-radius: 5px;
+  /* background-color: #260701; */
   transition: background-color 0.3s ease;
 }
 .menu-item-icon {
@@ -36,12 +37,17 @@
   color: gray;
   border-radius: 5px;
   cursor: pointer;
+  font-weight: lighter;
   font-size: 17px;
 }
 .submenu-item:hover {
-  color: #000;
-  font-weight: bolder;
+  color: #260701;
+  /* font-weight: bolder; */
 }
+.submenu-item:focus .menu-item-header{
+  background-color: #260701;
+}
+
 .down-icon {
   font-weight: lighter;
   color: #fff;

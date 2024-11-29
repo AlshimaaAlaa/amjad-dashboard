@@ -184,9 +184,6 @@ function SidebarBox() {
 
   return (
     <div className="sidebar">
-      {/* <div className="text-center pt-5">
-        <img src="/assets/images/Group (2).png" alt="logo" className="mt-5" />
-      </div> */}
       <div className="sidebarContainer">
         <ul className="menu">
           {menuItems.map((item) => (

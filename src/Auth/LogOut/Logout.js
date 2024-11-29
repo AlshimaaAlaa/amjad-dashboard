@@ -24,7 +24,7 @@ function Logout() {
         setLoading(false);
         console.log("Successfully+ logged out");
         localStorage.clear();
-        setShowModal(false); 
+        setShowModal(false);
         navigate("/");
       } else {
         setLoading(false);
@@ -38,13 +38,17 @@ function Logout() {
 
   return (
     <div>
-      <p
-        className="fw-bolder text-danger ps-3 pe-3 pt-3"
-        onClick={() => setShowModal(true)}
-        style={{ cursor: "pointer" }}
-      >
-        تسجيل الخروج
-      </p>
+      <div className="d-flex align-items-center">
+        <img src="/assets/images/logout.png" alt="logout"  width={'20px'} className="me-3"/>
+        <p
+          className="fw-bolder text-danger ps-3 pe-3 pt-3"
+          onClick={() => setShowModal(true)}
+          style={{ cursor: "pointer" }}
+        >
+          تسجيل الخروج
+        </p>
+      </div>
+
       {showModal && (
         <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
           <div className="ps-5 pe-5 pt-5 pb-4">
@@ -75,7 +79,7 @@ function Logout() {
               <button
                 className="mt-4 fw-bolder"
                 style={{ backgroundColor: "transparent", border: "none" }}
-                onClick={()=>setShowModal(false)}
+                onClick={() => setShowModal(false)}
               >
                 الغاء
               </button>

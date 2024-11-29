@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./AllTypes.css";
 import DeleteType from "../Delete Type/DeleteType";
+import { useNavigate } from "react-router-dom";
 function AllTypes() {
   const [category, setCategory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [options, setOptions] = useState(false);
-
+  const navigate = useNavigate();
   useEffect(() => {
     async function fetchProducts() {
       setLoading(true);
@@ -50,6 +51,7 @@ function AllTypes() {
           borderRadius: "30px",
           padding: "0px 20px 0px 20px",
           width: "200px",
+          height: "45px",
         }}
       >
         <svg
@@ -100,7 +102,7 @@ function AllTypes() {
           className="text-danger"
           style={{
             textAlign: "center",
-            fontSize: "35px",
+            fontSize: "30px",
             margin: "100px 350px ",
             fontFamily: "Amiri",
           }}
@@ -111,7 +113,7 @@ function AllTypes() {
         <p
           style={{
             textAlign: "center",
-            fontSize: "35px",
+            fontSize: "30px",
             margin: "100px 350px ",
             fontFamily: "Amiri",
           }}
@@ -135,7 +137,7 @@ function AllTypes() {
             <tbody>
               {category.map((category, index) => (
                 <tr key={index}>
-                  <td className="pb-4">{category.id}</td>
+                  <td className="pb-4">{index + 1}</td>
                   <td className="pb-4">{category.name}</td>
                   <td className="text-center pb-4 position-relative">
                     <img
@@ -152,8 +154,25 @@ function AllTypes() {
                           className="position-absolute showOptions"
                           style={{ zIndex: "1" }}
                         >
-                          <p className="fw-bolder p-2">تعديل البيانات</p>
-                          <p className="fw-bolder p-2 ">
+                          <p
+                            className="fw-bolder p-2"
+                            style={{ cursor: "pointer" }}
+                            onClick={() =>
+                              navigate("/HomePage/EditType", {
+                                state: category,
+                              })
+                            }
+                          >
+                            تعديل البيانات
+                          </p>
+
+                          <p
+                            className="fw-bolder p-2 "
+                            style={{ cursor: "pointer" }}
+                            onClick={() =>
+                              navigate(`/HomePage/AllTypes/${category.id}/`)
+                            }
+                          >
                             عرض المنتجات الخاصة بهذا النوع
                           </p>
                           <DeleteType id={category.id} />
@@ -167,7 +186,6 @@ function AllTypes() {
           </table>
         </div>
       )}
-      {/* table of all types */}
     </div>
   );
 }

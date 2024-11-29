@@ -105,7 +105,7 @@ function AllMessages() {
           className="text-danger"
           style={{
             textAlign: "center",
-            fontSize: "40px",
+            fontSize: "30px",
             margin: "100px 350px",
             fontFamily: "Amiri",
           }}
@@ -116,7 +116,7 @@ function AllMessages() {
         <p
           style={{
             textAlign: "center",
-            fontSize: "40px",
+            fontSize: "30px",
             margin: "100px 350px",
             fontFamily: "Amiri",
           }}
@@ -139,9 +139,9 @@ function AllMessages() {
               </tr>
             </thead>
             <tbody>
-              {allMessages.map((message) => (
+              {allMessages.map((message , index) => (
                 <tr key={message.id}>
-                  <td className="pb-4">{message.id}</td>
+                  <td className="pb-4">{index + 1}</td>
                   <td className="pb-4">{message.name}</td>
                   <td className="pb-4">{message.phone_number}</td>
                   <td className="pb-4">{message.email}</td>

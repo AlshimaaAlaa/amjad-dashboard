@@ -1,21 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Field, Form, Formik, ErrorMessage } from "formik";
 import { useNavigate } from "react-router-dom";
 import Modal from "../../../Common Components/Modal/Modal";
 import * as Yup from "yup";
-
 import "./AddNewCat.css";
 
 function AddNewCat() {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [showModalError, setShowModalError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [categories, setCategories] = useState([]);
 
   const initialValues = {
     name: "",
     description: "",
     price: "",
+    category_id: "",
     color: "",
     length_cm: "",
     width_cm: "",
@@ -27,6 +29,9 @@ function AddNewCat() {
     fabric_material: "",
     upholstery_material: "",
     warranty_months: "",
+    uploaded_images: [],
+    product_video: null,
+    is_active: true, //by default
   };
 
   const validationSchema = Yup.object({
@@ -46,28 +51,46 @@ function AddNewCat() {
     warranty_months: Yup.string().required(
       "يرجي ادخال عدد أشهر الضمان بالأرقام فقط"
     ),
-    category: Yup.string().required("يرجي اختيار نوع المنتج"),
+    category_id: Yup.string().required("يرجي اختيار نوع المنتج"),
+    uploaded_images: Yup.array()
+      .of(Yup.mixed().required("يرجي تحميل الصور"))
+      .min(1, "يرجي تحميل صورة واحدة على الأقل"),
+    // product_video: Yup.mixed()
+    //   .test(
+    //     "is-valid-video",
+    //     "يرجى تحميل فيديو صحيح",
+    //     (value) =>
+    //       value instanceof File ||
+    //       (typeof value === "string" && value.startsWith("http"))
+    //   )
+    //   .nullable(),
+    is_active: Yup.boolean(),
   });
 
   const handleSubmit = async (values) => {
     setLoading(true);
-    const items = {
-      name: values.name,
-      description: values.description,
-      price: values.price,
-      length_cm: values.length_cm,
-      width_cm: values.width_cm,
-      height_cm: values.height_cm,
-      depth_cm: values.depth_cm,
-      stock: values.stock,
-      country_of_origin: values.country_of_origin,
-      wood_material: values.wood_material,
-      fabric_material: values.fabric_material,
-      upholstery_material: values.upholstery_material,
-      warranty_months: values.warranty_months,
-      color: values.color,
-      category: values.category,
-    };
+
+    const formData = new FormData();
+    for (let key in values) {
+      if (key !== "uploaded_images" && key !== "product_video") {
+        formData.append(key, values[key]);
+      }
+    }
+
+    if (values.uploaded_images?.length > 0) {
+      Array.from(values.uploaded_images).forEach((file) => {
+        formData.append("uploaded_images", file);
+      });
+    }
+
+    if (values.product_video) {
+      formData.append("product_video", values.product_video);
+    }
+
+    console.log("FormData before sending:");
+    for (let pair of formData.entries()) {
+      console.log(`${pair[0]}:`, pair[1]);
+    }
 
     try {
       const response = await fetch("http://104.248.251.235:8080/products/", {
@@ -75,27 +98,47 @@ function AddNewCat() {
         headers: {
           Authorization: localStorage.getItem("access token"),
           accept: "application/json",
-          "Content-Type": "application/json",
         },
-        body: JSON.stringify(items),
+        body: formData,
       });
+
       const result = await response.json();
-      console.log(result);
+      console.log("Server response:", result);
+
       if (response.ok) {
         setLoading(false);
         setShowModal(true);
-        setTimeout(() => {
-          navigate("/HomePage/AllCats");
-        }, 2000);
+        setShowModalError(false);
       } else {
-        setError("فشل في إضافة المنتج. حاول مرة أخرى.");
+        console.error("Error in response:", result);
+        setShowModal(false);
+        setShowModalError(true);
         setLoading(false);
       }
     } catch (error) {
-      setError("حدث خطأ أثناء إضافة المنتج.");
+      setShowModal(false);
+      setShowModalError(true);
+      console.error("Error during submission:", error);
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("http://104.248.251.235:8080/categories/");
+        const data = await response.json();
+        if (response.ok) {
+          setCategories(data.data);
+        } else {
+          setError("فشل في جلب أنواع المنتجات.");
+        }
+      } catch (error) {
+        setError("حدث خطأ أثناء جلب أنواع المنتجات.");
+      }
+    };
+    fetchCategories();
+  }, []);
 
   return (
     <div className="editContainer">
@@ -104,8 +147,8 @@ function AddNewCat() {
           className="text-danger"
           style={{
             textAlign: "center",
-            fontSize: "35px",
-            margin: "100px 350px",
+            fontSize: "30px",
+            margin: "100px 350px ",
             fontFamily: "Amiri",
           }}
         >
@@ -115,201 +158,387 @@ function AddNewCat() {
       {!error && (
         <>
           <div
-            className="d-flex align-items-center mb-5"
+            className="d-flex align-items-center"
             style={{
               backgroundColor: "#F5F5DC",
               border: "1px solid lightgray",
               borderRadius: "30px",
-              padding: "0px 20px",
+              padding: "0px 20px 0px 20px",
               width: "200px",
+              height: "43px",
             }}
           >
             <p className="mt-3 fw-bolder">+</p>
-            <p className="mt-3 me-2 ms-2 fw-bolder">اضافة منتج جديد</p>
+            <p className="mt-3 me-2 ms-2 fw-bolder"> اضافة منتج جديد</p>
           </div>
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            <Form className="editForm">
-              <p className="fw-bolder mb-3">المعلومات الأساسية :</p>
-              <div className="d-flex">
-                <div className="ms-5">
-                  <label className="mb-2 d-block">اسم المنتج</label>
-                  <Field name="name" className="input" />
-                  <ErrorMessage
-                    name="name"
-                    component="div"
-                    className="error-message text-danger fw-bolder"
-                  />
+            {({ setFieldValue }) => (
+              <Form className="addForm mt-5">
+                <div>
+                  <p className="fw-bolder">المعلومات الاساسية : </p>
                 </div>
-                <div className="me-5">
-                  <label className="d-block mb-2">النوع</label>
-                  <Field as="select" className="types-options" name="category">
-                    <option>أختر نوع</option>
-                    <option>كلاسيك</option>
-                    <option>نيو كلاسيك</option>
-                  </Field>
-                  <ErrorMessage
-                    name="category"
-                    component={"div"}
-                    className="error-message text-danger fw-bolder"
-                  />
-                </div>
-              </div>
-              <div className="mt-4 d-flex">
-                <div className="ms-5">
-                  <label className="mb-2 d-block">السعر بالجنية المصري</label>
-                  <Field name="price" className="input" />
-                  <ErrorMessage
-                    name="price"
-                    component="div"
-                    className="error-message text-danger fw-bolder"
-                  />
-                </div>
-                <div className="me-5">
-                  <label className="mb-2 d-block">عدد القطع</label>
-                  <Field name="stock" className="input" />
-                  <ErrorMessage
-                    name="stock"
-                    component="div"
-                    className="error-message text-danger fw-bolder"
-                  />
-                </div>
-              </div>
-              <div className="d-flex">
-              <div className="mt-4 ms-5">
-                  <label className="mb-2 d-block">كتابة وصف المنتج</label>
-                  <Field name="description" className="message" />
-                </div>
-                <div className="me-5">
-                  <label className="d-block mb-2 mt-2">اللون</label>
-                  <Field name="color" className="input" />
-                </div>
-                
-              </div>
+                <div className="d-flex  justify-content-between">
+                  <div className="form-group ms-5">
+                    <label className="mb-2">إسم المنتج</label>
+                    <Field
+                      name="name"
+                      type="text"
+                      className="form-control"
+                    />
+                    <ErrorMessage
+                      name="name"
+                      component="div"
+                      className="text-danger fw-bolder error-message"
+                    />
+                  </div>
 
-              <hr className="mt-5" />
-              <p className="fw-bolder mt-4 mb-4">تفاصيل :</p>
-              <div className="d-flex">
-                <div className="ms-5">
-                  <label className="mb-2 d-block">خامة الخشب</label>
-                  <Field name="wood_material" className="input" />
+                  <div className="form-group me-5">
+                    <label className="mb-2">نوع المنتج:</label>
+                    <Field
+                      as="select"
+                      name="category_id"
+                      className="form-control selectOption"
+                    >
+                      <option value="">إختر نوع المنتج</option>
+                      {categories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </Field>
+                    <ErrorMessage
+                      name="category_id"
+                      component="div"
+                      className="text-danger error-message fw-bolder"
+                    />
+                  </div>
+                </div>
+                {/* 2 */}
+                <div className="d-flex  justify-content-between">
+                  <div className="form-group ms-5">
+                    <label className="mt-4 mb-2">السعر بالجنيه المصري</label>
+                    <Field
+                      name="price"
+                      type="number"
+                      className="form-control"
+                    />
+                    <ErrorMessage
+                      name="price"
+                      component="div"
+                      className="text-danger fw-bolder error-message"
+                    />
+                  </div>
+                  <div className="form-group me-5">
+                    <label className="mt-4 mb-2">عدد القطع</label>
+                    <Field
+                      name="stock"
+                      type="number"
+                      className="form-control"
+                    />
+                    <ErrorMessage
+                      name="stock"
+                      component="div"
+                      className="text-danger fw-bolder error-message"
+                    />
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label>الوصف:</label>
+                  <Field
+                    name="description"
+                    className="form-control message"
+                  />
                   <ErrorMessage
-                    name="wood_material"
+                    name="description"
                     component="div"
-                    className="error-message text-danger fw-bolder"
+                    className="text-danger fw-bolder error-message"
                   />
                 </div>
-                <div className="me-5">
-                  <label className="mb-2 d-block">خامة القماش</label>
-                  <Field name="fabric_material" className="input" />
+                {/* 3 */}
+                <hr
+                  className="mt-5"
+                  style={{ position: "relative", zIndex: "-1" }}
+                />
+                <div>
+                  <p className="fw-bolder">تفاصيل : </p>
+                </div>
+                <div className="d-flex  justify-content-center">
+                  <div className="form-group ms-5">
+                    <label className="mb-2 mt-4">خامة الخشب</label>
+                    <Field
+                      name="wood_material"
+                      type="text"
+                      className="form-control"
+                    />
+                    <ErrorMessage
+                      name="wood_material"
+                      component="div"
+                      className="text-danger error-message fw-bolder"
+                    />
+                  </div>
+
+                  <div className="form-group me-5">
+                    <label className="mb-2 mt-4">خامة القماش</label>
+                    <Field
+                      name="fabric_material"
+                      type="text"
+                      className="form-control"
+                    />
+                    <ErrorMessage
+                      name="fabric_material"
+                      component="div"
+                      className="text-danger fw-bolder error-message"
+                    />
+                  </div>
+                </div>
+                {/* 4 */}
+                <div className="d-flex justify-content-between ">
+                  <div className="form-group ms-4">
+                    <label className="mt-4 mb-2">خامة التنجيد</label>
+                    <Field
+                      name="upholstery_material"
+                      type="text"
+                      className="form-control"
+                    />
+                    <ErrorMessage
+                      name="upholstery_material"
+                      component="div"
+                      className="text-danger fw-bolder error-message"
+                    />
+                  </div>
+
+                  <div className="form-group me-5">
+                    <label className="mt-4 mb-2">عدد شهور الضمان</label>
+                    <Field
+                      name="warranty_months"
+                      type="text"
+                      className="form-control"
+                    />
+                    <ErrorMessage
+                      name="warranty_months"
+                      component="div"
+                      className="text-danger fw-bolder error-message"
+                    />
+                  </div>
+                </div>
+                <hr
+                  className="mt-5"
+                  style={{ position: "relative", zIndex: "-1" }}
+                />
+                <div>
+                  <p className="fw-bolder">المواصفات : </p>
+                </div>
+                <div className="d-flex  justify-content-between">
+                  <div className="form-group ms-5">
+                    <label className="mb-2">الطول ( cm )</label>
+                    <Field
+                      name="length_cm"
+                      type="number"
+                      className="form-control"
+                    />
+                    <ErrorMessage
+                      name="length_cm"
+                      component="div"
+                      className="text-danger error-message fw-bolder"
+                    />
+                  </div>
+
+                  <div className="form-group me-5">
+                    <label className="mb-2">العرض ( cm )</label>
+                    <Field
+                      name="width_cm"
+                      type="number"
+                      className="form-control"
+                    />
+                    <ErrorMessage
+                      name="width_cm"
+                      component="div"
+                      className="text-danger error-message fw-bolder"
+                    />
+                  </div>
+                </div>
+                <div className="d-flex">
+                  <div className="form-group  ms-5">
+                    <label className="mt-4 mb-2">الارتفاع ( cm )</label>
+                    <Field
+                      name="height_cm"
+                      type="number"
+                      className="form-control"
+                    />
+                    <ErrorMessage
+                      name="height_cm"
+                      component="div"
+                      className="text-danger fw-bolder error-message"
+                    />
+                  </div>
+
+                  <div className="form-group me-5">
+                    <label className="mt-4 mb-2">العمق ( cm )</label>
+                    <Field
+                      name="depth_cm"
+                      type="number"
+                      className="form-control"
+                    />
+                    <ErrorMessage
+                      name="depth_cm"
+                      component="div"
+                      className="text-danger fw-bolder error-message"
+                    />
+                  </div>
+                </div>
+                <div className="d-flex">
+                  <div className="form-group ms-5">
+                    <label className="mt-4 mb-2">اللون</label>
+                    <Field
+                      name="color"
+                      type="text"
+                      className="form-control"
+                    />
+                    <ErrorMessage
+                      name="color"
+                      component="div"
+                      className="text-danger fw-bolder error-message"
+                    />
+                  </div>
+
+                  <div className="form-group me-5">
+                    <label className="mt-4 mb-2">بلد المنشأ</label>
+                    <Field
+                      name="country_of_origin"
+                      type="text"
+                      className="form-control"
+                    />
+                    <ErrorMessage
+                      name="country_of_origin"
+                      component="div"
+                      className="text-danger"
+                    />
+                  </div>
+                </div>
+                <hr
+                  className="mt-5"
+                  style={{ position: "relative", zIndex: "-1" }}
+                />
+                <div>
+                  <p className="fw-bolder">تحميل الصور : </p>
+                  <p style={{ color: "gray" }}>
+                    يجب تحميل صورة واحدة على الاقل <br />
+                    الصورة الاولى تظهر كصورة خارجية{" "}
+                  </p>
+                </div>
+                <input
+                  type="file"
+                  name="uploaded_images"
+                  multiple
+                  onChange={(e) => {
+                    // Convert FileList to an array before setting it in Formik
+                    const filesArray = Array.from(e.target.files);
+                    setFieldValue("uploaded_images", filesArray);
+                  }}
+                />
+
+                <div className="form-group">
+                  <label className="mt-4 mb-2 d-block">
+                    تحميل فيديو المنتج (اختياري) :{" "}
+                  </label>
+                  <input
+                    type="file"
+                    name="product_video"
+                    accept="video/*"
+                    onChange={(e) =>
+                      setFieldValue("product_video", e.target.files[0])
+                    }
+                  />
                   <ErrorMessage
-                    name="fabric_material"
+                    name="product_video"
                     component="div"
-                    className="error-message text-danger fw-bolder"
+                    className="text-danger"
                   />
                 </div>
-              </div>
-              <div className="d-flex">
-                <div className="ms-5">
-                  <label className="mb-2 mt-3 d-block">خامة التنجيد</label>
-                  <Field name="upholstery_material" className="input" />
-                  <ErrorMessage
-                    name="upholstery_material"
-                    component="div"
-                    className="error-message text-danger fw-bolder"
-                  />
+                <div className="text-center mt-4">
+                  <button
+                    type="submit"
+                    style={{
+                      margin: "0px 200px 0px 0px",
+                      border: "0px",
+                      height: "50px",
+                      width: "300px",
+                      borderRadius: "10px",
+                      padding: "10px",
+                      color: "#fff",
+                      backgroundColor: "#260701",
+                      fontWeight: "bolder",
+                    }}
+                    disabled={loading}
+                  >
+                    {loading ? "جاري التحميل..." : "إضافة المنتج"}
+                  </button>
                 </div>
-                <div className="me-5">
-                  <label className="mb-2 mt-3 d-block">عدد شهور الضمان</label>
-                  <Field name="warranty_months" className="input" />
-                  <ErrorMessage
-                    name="warranty_months"
-                    component="div"
-                    className="error-message text-danger fw-bolder"
-                  />
-                </div>
-              </div>
-              <p className="fw-bolder mt-4 mb-4">المواصفات :</p>
-              <div className="d-flex">
-                <div className="ms-5">
-                  <label className="mb-2 d-block">الطول (cm)</label>
-                  <Field name="length_cm" className="input" />
-                  <ErrorMessage
-                    name="length_cm"
-                    component="div"
-                    className="error-message text-danger fw-bolder"
-                  />
-                </div>
-                <div className="me-5">
-                  <label className="mb-2 d-block">العرض (cm)</label>
-                  <Field name="width_cm" className="input" />
-                  <ErrorMessage
-                    name="width_cm"
-                    component="div"
-                    className="error-message text-danger fw-bolder"
-                  />
-                </div>
-              </div>
-              <div className="d-flex">
-                <div className="ms-5">
-                  <label className="mb-2 mt-3 d-block">الارتفاع (cm)</label>
-                  <Field name="height_cm" className="input" />
-                  <ErrorMessage
-                    name="height_cm"
-                    component="div"
-                    className="error-message text-danger fw-bolder"
-                  />
-                </div>
-                <div className="me-5">
-                  <label className="mb-2 mt-3 d-block">السمك (cm)</label>
-                  <Field name="depth_cm" className="input" />
-                  <ErrorMessage
-                    name="depth_cm"
-                    component="div"
-                    className="error-message text-danger fw-bolder"
-                  />
-                </div>
-              </div>
-              <hr className="mt-5" />
-              <div>
-                <p className="fw-bolder fs-5">تحميل الصور:</p>
-                <p style={{ color: "#909090" }}>
-                  يجب تحميل صورة واحدة على الاقل <br />
-                  الصورة الاولى تظهر كصورة خارجية{" "}
-                </p>
-              </div>
-              <div className="mt-4 d-flex flex-column align-items-center justify-content-center">
-                <button type="submit" className="save-edit">
-                  {loading ? "جاري التحميل..." : "حفظ المنتج"}
-                </button>
-              </div>
-            </Form>
+              </Form>
+            )}
           </Formik>
-          <div className="text-center">
-            <button
-              onClick={navigate("/HomePage/AllCats")}
-              style={{
-                border: "1px solid #260701",
-                backgroundColor: "transparent",
-                marginTop: "20px",
-                fontWeight: "bolder",
-                height: "50px",
-                width: "300px",
-                borderRadius: "10px",
-              }}
-            >
-              الغاء
-            </button>
-          </div>
         </>
       )}
       {showModal && (
-        <Modal>
-          <div>
+        <Modal isOpen={showModal}>
+          <div style={{ padding: "20px" }}>
+            <div className="text-center">
+              <img
+                src="/assets/images/success-achievement-award-medal-winner-svgrepo-com 1.png"
+                alt="success"
+              />
+            </div>
+            <div>
+              <p className="text-center fw-bolder">تم اضافة هذا المنتج بنجاح</p>
+              <button
+                onClick={() => navigate("/HomePage/AllCats")}
+                style={{
+                  border: "0px",
+                  height: "50px",
+                  width: "300px",
+                  borderRadius: "10px",
+                  color: "#fff",
+                  backgroundColor: "#260701",
+                }}
+              >
+                {loading ? "جاري التحميل..." : "العودة الي صفحة جميع المنتجات"}
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
 
+      {showModalError && (
+        <Modal isOpen={showModalError}>
+          <div style={{ padding: "20px" }}>
+            <div className="text-center">
+              <img
+                src="/assets/images/material-symbols_sms-failed-outline-rounded.png"
+                alt="success"
+              />
+            </div>
+            <div>
+              <p className="text-center fw-bolder">
+                حدث خطأ أثناء اضافة هذا النتج !
+              </p>
+              <button
+                onClick={() => navigate("/HomePage/AllCats")}
+                style={{
+                  border: "0px",
+                  height: "50px",
+                  width: "300px",
+                  borderRadius: "10px",
+                  color: "#fff",
+                  backgroundColor: "#260701",
+                }}
+              >
+                {loading ? "جاري التحميل..." : "العودة الي صفحة جميع المنتجات"}
+              </button>
+            </div>
           </div>
         </Modal>
       )}

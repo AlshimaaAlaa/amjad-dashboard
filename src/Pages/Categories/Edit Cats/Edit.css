@@ -3,10 +3,10 @@
   font-family: Tajawal;
 }
 .editForm {
-  width: 900px;
-  margin: auto;
+  /* width: 900px; */
+  /* margin: auto; */
 }
-.editForm input {
+.editForm input , .input {
   height: 50px;
   padding: 10px;
   border-radius: 10px;
