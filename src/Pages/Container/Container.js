@@ -105,7 +105,12 @@ function Container() {
         </div>
         <div className="mt-3">
           <h4 className="mb-0 fw-bolder">
-            {status.category_stats && status.category_stats[0]?.product_count}
+          {
+        status.category_stats &&
+        status.category_stats.find(
+          (category) => category.category_name === "Modern"
+        )?.product_count
+      }
           </h4>
           <p>نيو كلاسيك</p>
         </div>
@@ -120,7 +125,12 @@ function Container() {
         </div>
         <div className="mt-3">
           <h4 className="mb-0 fw-bolder">
-            {status.category_stats && status.category_stats[1]?.product_count}
+          {
+        status.category_stats &&
+        status.category_stats.find( 
+          (category) => category.category_name === "classic" 
+        )?.product_count
+      }
           </h4>
           <p>كلاسيكي</p>
         </div>

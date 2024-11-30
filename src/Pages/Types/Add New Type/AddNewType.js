@@ -95,8 +95,14 @@ function AddNewType() {
                   <ErrorMessage
                     name="name"
                     component="div"
-                    className="text-danger"
+                    className="text-danger fw-bolder error-message"
                   />
+                  <p
+                    className="text-secondary mt-2"
+                    style={{ fontSize: "14px" }}
+                  >
+                    مثل : موديرن
+                  </p>
                 </div>
                 <div className="me-5">
                   <label className="d-block mb-2" htmlFor="description">
@@ -118,7 +124,7 @@ function AddNewType() {
                 <ErrorMessage
                   name="icon"
                   component="div"
-                  className="text-danger"
+                  className="text-danger error-message fw-bolder"
                 />
               </div>
               <div className="text-center mt-5">
@@ -132,28 +138,33 @@ function AddNewType() {
       </div>
       {showModal && (
         <Modal isOpen={showModal}>
-          <div style={{ padding: "20px" }}>
+          <div style={{ padding: "20px", width: "400px" }}>
             <div className="text-center">
               <img
                 src="/assets/images/success-achievement-award-medal-winner-svgrepo-com 1.png"
                 alt="success"
+                width={"130px"}
               />
             </div>
             <div>
-              <p className="text-center fw-bolder">تم اضافة هذا النوع بنجاح</p>
-              <button
-                onClick={() => navigate("/HomePage/AllTypes")}
-                style={{
-                  border: "0px",
-                  height: "50px",
-                  width: "300px",
-                  borderRadius: "10px",
-                  color: "#fff",
-                  backgroundColor: "#260701",
-                }}
-              >
-                {loading ? "جاري التحميل..." : "العودة الي صفحة جميع الأنواع"}
-              </button>
+              <p className="text-center fw-bolder mt-4">
+                تم اضافة هذا النوع بنجاح
+              </p>
+              <div className="text-center mt-2">
+                <button
+                  onClick={() => navigate("/HomePage/AllTypes")}
+                  style={{
+                    border: "0px",
+                    height: "50px",
+                    width: "300px",
+                    borderRadius: "10px",
+                    color: "#fff",
+                    backgroundColor: "#260701",
+                  }}
+                >
+                  {loading ? "جاري التحميل..." : "العودة الي صفحة جميع الأنواع"}
+                </button>
+              </div>
             </div>
           </div>
         </Modal>

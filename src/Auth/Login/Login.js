@@ -44,7 +44,7 @@ function Login() {
         setLoading(false);
         console.log("Login success:", result);
         localStorage.setItem("access token", result.data.access);
-        localStorage.setItem("username", result.data.username);
+        localStorage.setItem("username", result.data.name);
         console.log(result.data.username)
         setShowModal(true);
         setModalError(false);
@@ -176,17 +176,17 @@ function Login() {
         <Modal isOpen={showModal}>
           <div className="success-modal">
             <div>
-              <button
+              {/* <button
                 onClick={() => setShowModal(false)}
                 className="close-modal"
               >
                 X
-              </button>
+              </button> */}
             </div>
             <div className="success-img">
-              <img src="/assets/images/success-achievement-award-medal-winner-svgrepo-com 1.png" alt="done" />
+              <img style={{padding:"12px"}} src="/assets/images/success-achievement-award-medal-winner-svgrepo-com 1.png" alt="done" />
             </div>
-            <h4 className="p-4 text-center fw-bolder">
+            <h4 className=" text-center fw-bolder">
               لقد تم تسجيل دخولكم بنجاح
             </h4>
           </div>

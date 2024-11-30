@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Modal from "../../../Common Components/Modal/Modal";
 import "./Edit.css";
+
 function EditProductForm() {
   const { state } = useLocation();
   const [loading, setLoading] = useState(false);
@@ -10,7 +11,7 @@ function EditProductForm() {
   const navigate = useNavigate();
 
   const [productData, setProductData] = useState({
-    category_id: 0,
+    category_id: "",
     name: "",
     description: "",
     price: "",
@@ -19,20 +20,22 @@ function EditProductForm() {
     width_cm: "",
     height_cm: "",
     depth_cm: "",
-    stock: 0,
+    stock: "",
     country_of_origin: "",
     wood_material: "",
     fabric_material: "",
     upholstery_material: "",
-    warranty_months: 0,
-    uploaded_images: [""],
-    // product_video: "",
+    warranty_months: "",
+    uploaded_images: [],
     is_active: true,
+    vedio: null,
+    is_best_seller: false,
   });
 
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
+    // Fetch categories
     fetch("http://104.248.251.235:8080/categories")
       .then((response) => response.json())
       .then((data) => {
@@ -42,6 +45,7 @@ function EditProductForm() {
       })
       .catch((error) => console.error("Error fetching categories:", error));
 
+    // Populate form with existing data if provided
     if (state) {
       setProductData(state.product);
     }
@@ -54,34 +58,70 @@ function EditProductForm() {
       [name]: value,
     }));
   };
+
+  const handleFileChange = (e) => {
+    setProductData((prevData) => ({
+      ...prevData,
+      uploaded_images: Array.from(e.target.files),
+    }));
+  };
+
+  const validateForm = () => {
+    if (!productData.name || !productData.price || !productData.category_id) {
+      alert("الرجاء ملء جميع الحقول الإلزامية");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
+    if (!validateForm()) return;
+
     const updatedProductData = {
       ...productData,
       price: parseFloat(productData.price),
       stock: parseInt(productData.stock),
     };
-  
+
     try {
       setLoading(true);
+      const token = localStorage.getItem("access token");
+      if (!token) {
+        alert("Authorization token is missing. Please log in.");
+        return;
+      }
+
+      const formData = new FormData();
+      Object.keys(updatedProductData).forEach((key) => {
+        if (key === "uploaded_images") {
+          updatedProductData.uploaded_images.forEach((file) => {
+            formData.append("uploaded_images", file);
+          });
+        } else if (key === "product_video") {
+          if (updatedProductData.product_video) {
+            formData.append("product_video", updatedProductData.product_video); // Append the video file
+          }
+        } else {
+          formData.append(key, updatedProductData[key]);
+        }
+      });
+
       const response = await fetch(
         `http://104.248.251.235:8080/products/${state.product.id}/`,
         {
           method: "PATCH",
           headers: {
-            accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: localStorage.getItem("access token"),
+            Authorization: token,
           },
-          body: JSON.stringify(updatedProductData),
+          body: formData,
         }
       );
-  
-      // Log response for debugging
+
       const responseData = await response.json();
       console.log("API Response:", responseData);
-  
+
       if (response.ok) {
         setLoading(false);
         setShowModal(true);
@@ -99,68 +139,77 @@ function EditProductForm() {
       console.error("Error updating product:", error);
     }
   };
-  
+
   return (
     <div className="editContainer">
-      <div
-        className="d-flex align-items-center mb-3"
-        style={{
-          backgroundColor: "#F5F5DC",
-          border: "1px solid lightgray",
-          borderRadius: "30px",
-          padding: "0px 20px 0px 20px",
-          width: "200px",
-          height: "45px",
-        }}
-      >
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+      <div className="d-flex align-items-center justify-content-between">
+        <div
+          className="d-flex align-items-center mb-3"
+          style={{
+            backgroundColor: "#F5F5DC",
+            border: "1px solid lightgray",
+            borderRadius: "30px",
+            padding: "0px 20px 0px 20px",
+            width: "200px",
+            height: "45px",
+          }}
         >
-          <path
-            d="M16.196 8.5V3C16.196 1.89543 15.3006 1 14.196 1H3.19605C2.09148 1 1.19604 1.89543 1.19604 3V14C1.19604 15.1046 2.09148 16 3.19604 16H8.69604"
-            stroke="#909090"
-            stroke-width="1.5"
-          />
-          <rect
-            x="8.19604"
-            y="8"
-            width="15"
-            height="15"
-            rx="2"
-            stroke="#909090"
-            stroke-width="1.5"
-          />
-        </svg>
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M16.196 8.5V3C16.196 1.89543 15.3006 1 14.196 1H3.19605C2.09148 1 1.19604 1.89543 1.19604 3V14C1.19604 15.1046 2.09148 16 3.19604 16H8.69604"
+              stroke="#909090"
+              stroke-width="1.5"
+            />
+            <rect
+              x="8.19604"
+              y="8"
+              width="15"
+              height="15"
+              rx="2"
+              stroke="#909090"
+              stroke-width="1.5"
+            />
+          </svg>
 
-        <p className="mt-3 me-2 ms-2 fw-bolder">تعديل المنتج</p>
+          <p className="mt-3 me-2 ms-2 fw-bolder">تعديل المنتج</p>
+        </div>
       </div>
-      <div>
-        <p className="fw-bolder mt-5">المعلومات الاساسية : </p>
-      </div>
+
       <form className="editForm" onSubmit={handleSubmit}>
+        <div className="fw-bolder mt-4">
+          <p>المعلومات الاساسية : </p>
+        </div>
         <div className="d-flex align-items-center justify-content-between">
           <div className="ms-5">
-            <label className="mb-2 d-block">اسم المنتج</label>
+            <label className="d-block mb-2">اسم المنتج</label>
             <input
               type="text"
               name="name"
               value={productData.name}
               onChange={handleChange}
+              required
             />
+            <p className="text-secondary mt-2" style={{ fontSize: "14px" }}>
+              مثال: صالون كبير
+            </p>
           </div>
-          <div className="me-5">
+
+          <div className="me-5" style={{margin:"-55px 0px 0px 0px"}}>
             <label className="d-block mb-2">النوع</label>
             <select
               className="input"
               name="category_id"
               value={productData.category_id}
               onChange={handleChange}
+              required
             >
-              <option value=""> اختر النوع</option>
+              <option value="">اختر النوع</option>
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}
@@ -169,77 +218,91 @@ function EditProductForm() {
             </select>
           </div>
         </div>
-        {/* 2 */}
         <div className="d-flex align-items-center justify-content-between">
-          <div className="">
+          <div className="ms">
             <label className="d-block mb-2 mt-4">السعر بالجنيه المصري</label>
             <input
-              type="number"
+              // type="number"
               name="price"
               value={productData.price}
               onChange={handleChange}
+              required
             />
+            <p className="text-secondary mt-2" style={{ fontSize: "14px" }}>
+              ارقام فقط
+            </p>
           </div>
-          <div>
-            <label className="mt-4 mb-2 d-block">عدد القطع</label>
+
+          <div className="">
+            <label className="d-block mt-4 mb-2">عدد القطع</label>
             <input
-              type="number"
+              // type="number"
               name="stock"
               value={productData.stock}
               onChange={handleChange}
             />
+            <p className="text-secondary mt-2" style={{ fontSize: "14px" }}>
+              ارقام فقط
+            </p>
           </div>
         </div>
-        <div>
-          <label className="d-block mb-2 mt-4">كتابة وصف المنتج</label>
-          <textarea
-            className="input"
-            style={{ height: "150px" }}
+        <div className="">
+          <label className="mb-2 mt-4 d-block">كتابة وصف المنتج</label>
+          <input
+            className="message"
             name="description"
             value={productData.description}
             onChange={handleChange}
+            rows="5"
           />
+          <p className="text-secondary mt-2" style={{ fontSize: "14px" }}>
+            كتابة جمل وصفية - الالوان المتاحة
+          </p>
         </div>
         <hr className="mt-5" style={{ position: "relative", zIndex: "-1" }} />
         <div>
-          <p className="fw-bolder mt-3">تفاصيل : </p>
+          <p className="fw-bolder">تفاصيل : </p>
         </div>
         <div className="d-flex align-items-center justify-content-between">
-          <div>
-            <label className="d-block mb-2">خامة الخشب </label>
+          <div className="ms-5">
+            <label className="mb-2 d-block">خامة الخشب : </label>
             <input
-              type="text"
               name="wood_material"
               value={productData.wood_material}
               onChange={handleChange}
             />
+            <p className="text-secondary mt-2" style={{ fontSize: "14px" }}>
+              {" "}
+              مثال: زان
+            </p>
           </div>
-
-          <div>
-            <label className="mb-2 d-block"> خامة القماش</label>
+          <div className="me-5">
+            <label className="mb-2 d-block">خامة القماش : </label>
             <input
-              type="text"
               name="fabric_material"
               value={productData.fabric_material}
               onChange={handleChange}
             />
+            <p className="text-secondary mt-2" style={{ fontSize: "14px" }}>
+              مثال: كتان
+            </p>
           </div>
         </div>
         <div className="d-flex align-items-center justify-content-between">
-          <div>
-            <label className="mb-2 mt-4 d-block">خامة التنجيد</label>
+          <div className="ms-5">
+            <label className="mb-2 mt-4 d-block">خامة التنجيد : </label>
             <input
-              type="text"
               name="upholstery_material"
               value={productData.upholstery_material}
               onChange={handleChange}
             />
+            <p className="text-secondary mt-2" style={{ fontSize: "14px" }}>
+              مثال: اسفنج عالي الكثافة
+            </p>
           </div>
-
-          <div>
-            <label className="mb-2 mt-4 d-block">عدد شهور الضمان</label>
+          <div className="me-5">
+            <label className="mb-2 mt-4 d-block"> عدد شهور الضمان : </label>
             <input
-              type="number"
               name="warranty_months"
               value={productData.warranty_months}
               onChange={handleChange}
@@ -251,98 +314,104 @@ function EditProductForm() {
           <p className="fw-bolder">المواصفات : </p>
         </div>
         <div className="d-flex align-items-center justify-content-between">
-          <div>
-            <label className="d-block mb-2">الطول ( cm )</label>
+          <div className="ms-5">
+            <label className="mb-2 d-block">الطول ( cm )</label>
             <input
-              type="number"
               name="length_cm"
               value={productData.length_cm}
               onChange={handleChange}
             />
+            <p className="text-secondary mt-2" style={{ fontSize: "14px" }}>
+              ارقام فقط
+            </p>
           </div>
-
-          <div>
-            <label className="mb-2 d-block">العرض ( cm )</label>
+          <div className="me-5">
+            <label className="mb-2  d-block">العرض ( cm )</label>
             <input
-              type="number"
               name="width_cm"
               value={productData.width_cm}
               onChange={handleChange}
             />
+            <p className="text-secondary mt-2" style={{ fontSize: "14px" }}>
+              ارقام فقط
+            </p>
           </div>
         </div>
         <div className="d-flex align-items-center justify-content-between">
-          <div>
-            <label className="mb-2 mt-4 d-block">الارتفاع (سم)</label>
+          <div className="ms-5">
+            <label className="mb-2 mt-4 d-block">الارتفاع ( cm )</label>
             <input
-              type="number"
               name="height_cm"
               value={productData.height_cm}
               onChange={handleChange}
             />
+            <p className="text-secondary mt-2" style={{ fontSize: "14px" }}>
+              ارقام فقط
+            </p>
           </div>
-
-          <div>
-            <label className="mb-2 mt-4 d-block">العمق (سم)</label>
+          <div className="me-5">
+            <label className="mb-2 mt-4 d-block">العمق ( cm )</label>
             <input
-              type="number"
               name="depth_cm"
               value={productData.depth_cm}
               onChange={handleChange}
             />
+            <p className="text-secondary mt-2" style={{ fontSize: "14px" }}>
+              ارقام فقط
+            </p>
           </div>
         </div>
         <div className="d-flex align-items-center justify-content-between">
-          <div>
+          <div className="ms-5">
             <label className="mb-2 mt-4 d-block">اللون</label>
             <input
-              type="text"
               name="color"
               value={productData.color}
               onChange={handleChange}
             />
+            <p className="text-secondary mt-2" style={{ fontSize: "14px" }}>
+              ادخل لون للمنتج
+            </p>
           </div>
-
-          <div>
+          <div className="me-5">
             <label className="mb-2 mt-4 d-block">بلد المنشأ</label>
             <input
-              type="text"
               name="country_of_origin"
               value={productData.country_of_origin}
               onChange={handleChange}
             />
+            <p className="text-secondary mt-2" style={{ fontSize: "14px" }}>
+              ادخل بلد المنشأ مثال : مصر
+            </p>
           </div>
         </div>
         <hr className="mt-5" style={{ position: "relative", zIndex: "-1" }} />
-
-        <div>
-          <label className="mb-2 d-block"> الصور</label>
+        <div className="">
+          <label className="mb-2 mt-4 d-block">الصور</label>
           <input
             type="file"
-            multiple
             name="uploaded_images"
+            multiple
+            onChange={handleFileChange}
+          />
+        </div>
+        <div className="">
+          <label className="mb-2 mt-4 d-block">فيديو المنتج</label>
+          <input
+            type="file"
+            name="product_video"
             onChange={(e) =>
-              setProductData({
-                ...productData,
-                uploaded_images: Array.from(e.target.files),
-              })
+              setProductData((prevData) => ({
+                ...prevData,
+                product_video: e.target.files[0],
+              }))
             }
           />
         </div>
-        {/* <div>
-          <label className="d-block mb-2 mt-4">رابط الفيديو</label>
-          <input
-            type="url"
-            name="product_video"
-            value={productData.product_video}
-            onChange={handleChange}
-          />
-        </div> */}
-
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-center mt-4">
           <label className="ms-3">الحالة</label>
           <input
-            style={{ width: "20px", margin: "" }}
+            style={{ width: "20px" }}
             type="checkbox"
             name="is_active"
             checked={productData.is_active}
@@ -353,46 +422,68 @@ function EditProductForm() {
             }
           />
         </div>
+
+        <div className="d-flex align-items-center">
+          <label className="ms-3">منتج أكثر مبيعا ؟</label>
+          <input
+            style={{ width: "20px" }}
+            type="checkbox"
+            name="is_best_seller"
+            checked={productData.is_best_seller}
+            onChange={(e) =>
+              handleChange({
+                target: { name: "is_best_seller", value: e.target.checked },
+              })
+            }
+          />
+        </div>
+
         <div className="text-center">
           <button
             type="submit"
+            disabled={loading}
             style={{
-              border: "0px",
-              padding: "10px",
               width: "300px",
-              borderRadius: "10px",
+              height: "50px",
+              padding: "10px",
               color: "#fff",
               backgroundColor: "#260701",
-              fontWeight: "bolder",
+              borderRadius: "10px",
+              margin: "0px 200px 0px 0px",
             }}
           >
             {loading ? "جاري التحميل...." : "حفظ"}
           </button>
         </div>
       </form>
+
       {showModal && (
         <Modal isOpen={showModal}>
-          <div style={{ padding: "20px" }}>
+          <div className="" style={{ width: "400px", padding: "20px" }}>
             <div className="text-center">
               <img
                 src="/assets/images/success-achievement-award-medal-winner-svgrepo-com 1.png"
                 alt="success"
+                width={"120px"}
               />
             </div>
-            <div>
-              <p className="text-center fw-bolder">تم تعديل هذا المنتج بنجاح</p>
+            <p className="text-center fw-bolder fs-5 mt-4">
+              تم تحديث المنتج بنجاح!
+            </p>
+            <div className="text-center">
               <button
-                onClick={() => navigate("/HomePage/AllCats")}
+                className="mt-4 fw-bolder"
                 style={{
-                  border: "0px",
-                  height: "50px",
                   width: "300px",
-                  borderRadius: "10px",
+                  height: "50px",
+                  padding: "10px",
                   color: "#fff",
                   backgroundColor: "#260701",
+                  borderRadius: "10px",
                 }}
+                onClick={() => navigate("/HomePage/AllCats")}
               >
-                {loading ? "جاري التحميل..." : "العودة الي صفحة جميع المنتجات"}
+                الرجوع الي صفحة جميع المنتجات
               </button>
             </div>
           </div>
@@ -401,29 +492,30 @@ function EditProductForm() {
 
       {showModalError && (
         <Modal isOpen={showModalError}>
-          <div style={{ padding: "20px" }}>
+          <div className="" style={{ width: "400px", padding: "30px" }}>
             <div className="text-center">
               <img
                 src="/assets/images/material-symbols_sms-failed-outline-rounded.png"
-                alt="success"
+                alt="failed"
               />
             </div>
-            <div>
-              <p className="text-center fw-bolder">
-                حدث خطأ أثناء تعديل هذا المنتج !
-              </p>
+            <p className="text-center fw-bolder mt-4 fs-5">
+              حدث خطأ أثناء تحديث المنتج. حاول مجددًا.
+            </p>
+            <div className="text-center">
               <button
-                onClick={() => navigate("/HomePage/AllCats")}
+                className="mt-4 fw-bolder"
                 style={{
-                  border: "0px",
-                  height: "50px",
                   width: "300px",
-                  borderRadius: "10px",
+                  height: "50px",
+                  padding: "10px",
                   color: "#fff",
                   backgroundColor: "#260701",
+                  borderRadius: "10px",
                 }}
+                onClick={() => navigate("/HomePage/AllCats")}
               >
-                {loading ? "جاري التحميل..." : "العودة الي صفحة جميع المنتجات"}
+                الرجوع الي صفحة جميع المنتجات
               </button>
             </div>
           </div>

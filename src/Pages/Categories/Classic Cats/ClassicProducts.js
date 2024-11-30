@@ -173,7 +173,7 @@ function ClassicProducts() {
                           className="fw-bolder pb-2"
                           style={{ textAlign: "right", cursor: "pointer" }}
                           onClick={() =>
-                            navigate("/HomePage/Edit", { state: { product } })
+                            navigate("/HomePage/EditProductForm", { state: { product } })
                           }
                         >
                           تعديل البيانات

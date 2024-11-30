@@ -184,16 +184,18 @@ function AddNewCat() {
                 <div className="d-flex  justify-content-between">
                   <div className="form-group ms-5">
                     <label className="mb-2">إسم المنتج</label>
-                    <Field
-                      name="name"
-                      type="text"
-                      className="form-control"
-                    />
+                    <Field name="name" type="text" className="form-control" />
                     <ErrorMessage
                       name="name"
                       component="div"
                       className="text-danger fw-bolder error-message"
                     />
+                    <p
+                      className="mt-2 text-secondary"
+                      style={{ fontSize: "14px" }}
+                    >
+                      مثال: صالون كبير
+                    </p>
                   </div>
 
                   <div className="form-group me-5">
@@ -223,7 +225,7 @@ function AddNewCat() {
                     <label className="mt-4 mb-2">السعر بالجنيه المصري</label>
                     <Field
                       name="price"
-                      type="number"
+                      // type="number"
                       className="form-control"
                     />
                     <ErrorMessage
@@ -231,12 +233,18 @@ function AddNewCat() {
                       component="div"
                       className="text-danger fw-bolder error-message"
                     />
+                    <p
+                      className="text-secondary mt-2"
+                      style={{ fontSize: "14px" }}
+                    >
+                      ارقام فقط
+                    </p>
                   </div>
                   <div className="form-group me-5">
                     <label className="mt-4 mb-2">عدد القطع</label>
                     <Field
                       name="stock"
-                      type="number"
+                      // type="number"
                       className="form-control"
                     />
                     <ErrorMessage
@@ -244,19 +252,28 @@ function AddNewCat() {
                       component="div"
                       className="text-danger fw-bolder error-message"
                     />
+                    <p
+                      className="text-secondary mt-2"
+                      style={{ fontSize: "14px" }}
+                    >
+                      ارقام فقط
+                    </p>
                   </div>
                 </div>
                 <div className="form-group">
                   <label>الوصف:</label>
-                  <Field
-                    name="description"
-                    className="form-control message"
-                  />
+                  <Field name="description" className="form-control message" />
                   <ErrorMessage
                     name="description"
                     component="div"
                     className="text-danger fw-bolder error-message"
                   />
+                  <p
+                    className="text-secondary mt-2"
+                    style={{ fontSize: "14px" }}
+                  >
+                    كتابة جمل وصفية - الالوان المتاحة
+                  </p>
                 </div>
                 {/* 3 */}
                 <hr
@@ -279,6 +296,12 @@ function AddNewCat() {
                       component="div"
                       className="text-danger error-message fw-bolder"
                     />
+                    <p
+                      className="text-secondary mt-2"
+                      style={{ fontSize: "14px" }}
+                    >
+                      مثال: زان
+                    </p>
                   </div>
 
                   <div className="form-group me-5">
@@ -293,6 +316,12 @@ function AddNewCat() {
                       component="div"
                       className="text-danger fw-bolder error-message"
                     />
+                    <p
+                      className="text-secondary mt-2"
+                      style={{ fontSize: "14px" }}
+                    >
+                      مثال: كتان
+                    </p>
                   </div>
                 </div>
                 {/* 4 */}
@@ -309,6 +338,12 @@ function AddNewCat() {
                       component="div"
                       className="text-danger fw-bolder error-message"
                     />
+                    <p
+                      className="text-secondary mt-2"
+                      style={{ fontSize: "14px" }}
+                    >
+                      مثال: اسفنج عالي الكثافة
+                    </p>
                   </div>
 
                   <div className="form-group me-5">
@@ -323,6 +358,12 @@ function AddNewCat() {
                       component="div"
                       className="text-danger fw-bolder error-message"
                     />
+                    <p
+                      className="text-secondary mt-2"
+                      style={{ fontSize: "14px" }}
+                    >
+                      ارقام فقط
+                    </p>
                   </div>
                 </div>
                 <hr
@@ -337,7 +378,7 @@ function AddNewCat() {
                     <label className="mb-2">الطول ( cm )</label>
                     <Field
                       name="length_cm"
-                      type="number"
+                      // type="number"
                       className="form-control"
                     />
                     <ErrorMessage
@@ -345,13 +386,19 @@ function AddNewCat() {
                       component="div"
                       className="text-danger error-message fw-bolder"
                     />
+                    <p
+                      className="text-secondary mt-2"
+                      style={{ fontSize: "14px" }}
+                    >
+                      ارقام فقط
+                    </p>
                   </div>
 
                   <div className="form-group me-5">
                     <label className="mb-2">العرض ( cm )</label>
                     <Field
                       name="width_cm"
-                      type="number"
+                      // type="number"
                       className="form-control"
                     />
                     <ErrorMessage
@@ -359,6 +406,12 @@ function AddNewCat() {
                       component="div"
                       className="text-danger error-message fw-bolder"
                     />
+                    <p
+                      className="text-secondary mt-2"
+                      style={{ fontSize: "14px" }}
+                    >
+                      ارقام فقط
+                    </p>
                   </div>
                 </div>
                 <div className="d-flex">
@@ -366,7 +419,7 @@ function AddNewCat() {
                     <label className="mt-4 mb-2">الارتفاع ( cm )</label>
                     <Field
                       name="height_cm"
-                      type="number"
+                      // type="number"
                       className="form-control"
                     />
                     <ErrorMessage
@@ -374,13 +427,19 @@ function AddNewCat() {
                       component="div"
                       className="text-danger fw-bolder error-message"
                     />
+                    <p
+                      className="text-secondary mt-2"
+                      style={{ fontSize: "14px" }}
+                    >
+                      ارقام فقط
+                    </p>
                   </div>
 
                   <div className="form-group me-5">
                     <label className="mt-4 mb-2">العمق ( cm )</label>
                     <Field
                       name="depth_cm"
-                      type="number"
+                      // type="number"
                       className="form-control"
                     />
                     <ErrorMessage
@@ -388,21 +447,29 @@ function AddNewCat() {
                       component="div"
                       className="text-danger fw-bolder error-message"
                     />
+                    <p
+                      className="text-secondary mt-2"
+                      style={{ fontSize: "14px" }}
+                    >
+                      ارقام فقط
+                    </p>
                   </div>
                 </div>
                 <div className="d-flex">
                   <div className="form-group ms-5">
                     <label className="mt-4 mb-2">اللون</label>
-                    <Field
-                      name="color"
-                      type="text"
-                      className="form-control"
-                    />
+                    <Field name="color" type="text" className="form-control" />
                     <ErrorMessage
                       name="color"
                       component="div"
                       className="text-danger fw-bolder error-message"
                     />
+                    <p
+                      className="text-secondary mt-2"
+                      style={{ fontSize: "14px" }}
+                    >
+                      ادخال لون للمنتج
+                    </p>
                   </div>
 
                   <div className="form-group me-5">
@@ -417,6 +484,12 @@ function AddNewCat() {
                       component="div"
                       className="text-danger"
                     />
+                    <p
+                      className="text-secondary mt-2"
+                      style={{ fontSize: "14px" }}
+                    >
+                      ادخل بلد المنشأ مثال: مصر
+                    </p>
                   </div>
                 </div>
                 <hr
@@ -485,28 +558,34 @@ function AddNewCat() {
       )}
       {showModal && (
         <Modal isOpen={showModal}>
-          <div style={{ padding: "20px" }}>
+          <div style={{ padding: "20px", width: "400px" }}>
             <div className="text-center">
               <img
                 src="/assets/images/success-achievement-award-medal-winner-svgrepo-com 1.png"
                 alt="success"
+                width={'130px'}
               />
             </div>
             <div>
-              <p className="text-center fw-bolder">تم اضافة هذا المنتج بنجاح</p>
-              <button
-                onClick={() => navigate("/HomePage/AllCats")}
-                style={{
-                  border: "0px",
-                  height: "50px",
-                  width: "300px",
-                  borderRadius: "10px",
-                  color: "#fff",
-                  backgroundColor: "#260701",
-                }}
-              >
-                {loading ? "جاري التحميل..." : "العودة الي صفحة جميع المنتجات"}
-              </button>
+              <p className="text-center fw-bolder mt-4">تم اضافة هذا المنتج بنجاح</p>
+              <div className="text-center">
+                <button
+                className="mt-2"
+                  onClick={() => navigate("/HomePage/AllCats")}
+                  style={{
+                    border: "0px",
+                    height: "50px",
+                    width: "300px",
+                    borderRadius: "10px",
+                    color: "#fff",
+                    backgroundColor: "#260701",
+                  }}
+                >
+                  {loading
+                    ? "جاري التحميل..."
+                    : "العودة الي صفحة جميع المنتجات"}
+                </button>
+              </div>
             </div>
           </div>
         </Modal>

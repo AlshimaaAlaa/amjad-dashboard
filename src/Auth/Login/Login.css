@@ -60,10 +60,11 @@
   text-align: center;
 }
 .success-img img {
-  width: 130px;
+  width: 150px;
 }
 .success-modal {
-  width: 400px;
+  width: 450px;
+  padding: 20px;
 }
 .error-message {
   font-size: 12px;

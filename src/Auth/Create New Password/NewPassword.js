@@ -233,5 +233,4 @@ function NewPassword() {
     </div>
   );
 }
-
 export default NewPassword;

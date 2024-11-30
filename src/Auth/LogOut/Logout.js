@@ -6,6 +6,7 @@ function Logout() {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const confirmLogout = async () => {
     setLoading(true);
     try {
@@ -18,11 +19,8 @@ function Logout() {
       });
 
       const result = await response.json();
-      console.log(result);
-
       if (response.ok) {
         setLoading(false);
-        console.log("Successfully+ logged out");
         localStorage.clear();
         setShowModal(false);
         navigate("/");
@@ -39,7 +37,7 @@ function Logout() {
   return (
     <div>
       <div className="d-flex align-items-center">
-        <img src="/assets/images/logout.png" alt="logout"  width={'20px'} className="me-3"/>
+        <img src="/assets/images/logout.png" alt="logout" width="20px" className="me-3" />
         <p
           className="fw-bolder text-danger ps-3 pe-3 pt-3"
           onClick={() => setShowModal(true)}
@@ -90,4 +88,5 @@ function Logout() {
     </div>
   );
 }
+
 export default Logout;

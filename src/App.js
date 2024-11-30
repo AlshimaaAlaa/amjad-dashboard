@@ -10,7 +10,8 @@ import AllMessages from "./Pages/Messages/AllMessages/AllMessages";
 import DeleteMessage from "./Pages/Messages/Delete Message/DeleteMessage";
 import AddNewType from "./Pages/Types/Add New Type/AddNewType";
 import AllCats from "./Pages/Categories/All Categories/AllCats";
-import Edit from "./Pages/Categories/Edit Cats/Edit";
+// import Edit from "./Pages/Categories/Edit Cats/Edit";
+import EditProductForm from "./Pages/Categories/Edit Cats/Edit";
 import AddNewCat from "./Pages/Categories/Add New Cats/AddNewCat";
 import MessageDetail from "./Pages/Messages/Message Detail/MessageDetail";
 import ClassicProducts from "./Pages/Categories/Classic Cats/ClassicProducts";
@@ -33,7 +34,7 @@ function App() {
           <Route path="/HomePage/DeleteMessage" element={<DeleteMessage />} />
           <Route path="/HomePage/AddNewType" element={<AddNewType />} />
           <Route path="/HomePage/AllCats" element={<AllCats />} />
-          <Route path="/HomePage/Edit" element={<Edit />} />
+          <Route path="/HomePage/EditProductForm" element={<EditProductForm />} />
           <Route path="/HomePage/AddNewCat" element={<AddNewCat />} />
           <Route
             path="/HomePage/AllMessages/:id/"
