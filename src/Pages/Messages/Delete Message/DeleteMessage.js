@@ -52,13 +52,13 @@ function DeleteMessage({ id, onDelete }) {
           <div className="" style={{ width: "400px" }}>
             <div>
               <button
-                className="fs-4"
+                className="fs-5"
                 onClick={() => setShowModal(false)}
                 style={{
                   float: "right",
                   border: "none",
                   background: "transparent",
-                  padding: "10px",
+                  padding: "20px",
                 }}
               >
                 X
@@ -81,7 +81,7 @@ function DeleteMessage({ id, onDelete }) {
               </button>
               <button
                 onClick={() => setShowModal(false)}
-                className="cancel-delete"
+                className="cancel-delete mb-4"
               >
                 الغاء
               </button>

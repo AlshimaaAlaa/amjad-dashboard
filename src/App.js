@@ -10,7 +10,6 @@ import AllMessages from "./Pages/Messages/AllMessages/AllMessages";
 import DeleteMessage from "./Pages/Messages/Delete Message/DeleteMessage";
 import AddNewType from "./Pages/Types/Add New Type/AddNewType";
 import AllCats from "./Pages/Categories/All Categories/AllCats";
-// import Edit from "./Pages/Categories/Edit Cats/Edit";
 import EditProductForm from "./Pages/Categories/Edit Cats/Edit";
 import AddNewCat from "./Pages/Categories/Add New Cats/AddNewCat";
 import MessageDetail from "./Pages/Messages/Message Detail/MessageDetail";

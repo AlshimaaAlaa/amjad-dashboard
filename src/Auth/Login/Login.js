@@ -87,7 +87,7 @@ function Login() {
               <Form className="form">
                 <div>
                   <label className="d-block" htmlFor="username">
-                    البريد الالكتروني
+                     اسم المستخدم
                   </label>
                   <Field
                     placeholder="البريد الالكتروني*"
@@ -176,12 +176,6 @@ function Login() {
         <Modal isOpen={showModal}>
           <div className="success-modal">
             <div>
-              {/* <button
-                onClick={() => setShowModal(false)}
-                className="close-modal"
-              >
-                X
-              </button> */}
             </div>
             <div className="success-img">
               <img style={{padding:"12px"}} src="/assets/images/success-achievement-award-medal-winner-svgrepo-com 1.png" alt="done" />

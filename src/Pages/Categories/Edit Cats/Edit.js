@@ -35,7 +35,6 @@ function EditProductForm() {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    // Fetch categories
     fetch("http://104.248.251.235:8080/categories")
       .then((response) => response.json())
       .then((data) => {
@@ -45,7 +44,6 @@ function EditProductForm() {
       })
       .catch((error) => console.error("Error fetching categories:", error));
 
-    // Populate form with existing data if provided
     if (state) {
       setProductData(state.product);
     }
@@ -222,7 +220,6 @@ function EditProductForm() {
           <div className="ms">
             <label className="d-block mb-2 mt-4">السعر بالجنيه المصري</label>
             <input
-              // type="number"
               name="price"
               value={productData.price}
               onChange={handleChange}
@@ -236,7 +233,6 @@ function EditProductForm() {
           <div className="">
             <label className="d-block mt-4 mb-2">عدد القطع</label>
             <input
-              // type="number"
               name="stock"
               value={productData.stock}
               onChange={handleChange}

@@ -139,13 +139,21 @@ function AllMessages() {
               </tr>
             </thead>
             <tbody>
-              {allMessages.map((message , index) => (
+              {allMessages.map((message, index) => (
                 <tr key={message.id}>
                   <td className="pb-4">{index + 1}</td>
                   <td className="pb-4">{message.name}</td>
                   <td className="pb-4">{message.phone_number}</td>
                   <td className="pb-4">{message.email}</td>
-                  <td className="pb-4" onClick={()=>navigate(`/HomePage/AllMessages/${message.id}/`)} style={{cursor:"pointer"}}>{message.message}</td>
+                  <td
+                    className="pb-4"
+                    onClick={() =>
+                      navigate(`/HomePage/AllMessages/${message.id}/`)
+                    }
+                    style={{ cursor: "pointer" }}
+                  >
+                    {message.message}
+                  </td>
                   <td className="text-center position-relative">
                     <img
                       src="/assets/images/Group 6356159.png"
